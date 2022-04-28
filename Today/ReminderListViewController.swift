@@ -11,13 +11,28 @@ class ReminderListViewController: UICollectionViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
-
 
         let listLayout = listLayout()
+
+        typealias DataSource = UICollectionViewDiffableDataSource<Int, String>
+
+        var dataSource: DataSource!
+
         collectionView.collectionViewLayout = listLayout
 
+        let cellRegistration = UICollectionView.CellRegistration { (cell: UICollectionViewListCell, indexPath: IndexPath, itemIdentifier: String) in
 
+            let reminder = Reminder.sampleData[indexPath.item]
+            var contentConfiguration = cell.defaultContentConfiguration()
+
+            contentConfiguration.text = reminder.title
+            cell.contentConfiguration = contentConfiguration
+        }
+
+        dataSource = DataSource(collectionView: collectionView) { (collectionView: UICollectionView, indexPath: IndexPath, itemIdentifier: String) in
+
+            return collectionView.dequeueReusableCell(withReuseIdentifier: itemIdentifier, for: indexPath)
+        }
     }
 
     func listLayout() -> UICollectionViewCompositionalLayout {
@@ -28,7 +43,4 @@ class ReminderListViewController: UICollectionViewController {
 
         return UICollectionViewCompositionalLayout.list(using: listConfig)
     }
-
-
 }
-
